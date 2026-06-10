@@ -1,0 +1,74 @@
+`timescale 1ns/1ps
+
+module airport_runway_controller_tb;
+
+    reg clk;
+    reg rst;
+
+    reg emergency_req;
+    reg landing_req;
+    reg takeoff_req;
+
+    wire emergency_grant;
+    wire landing_grant;
+    wire takeoff_grant;
+
+    airport_runway_controller uut(
+
+        .clk(clk),
+        .rst(rst),
+
+        .emergency_req(emergency_req),
+        .landing_req(landing_req),
+        .takeoff_req(takeoff_req),
+
+        .emergency_grant(emergency_grant),
+        .landing_grant(landing_grant),
+        .takeoff_grant(takeoff_grant)
+
+    );
+
+    always #5 clk = ~clk;
+
+    initial
+    begin
+
+        clk = 0;
+        rst = 1;
+
+        emergency_req = 0;
+        landing_req = 0;
+        takeoff_req = 0;
+
+        #10 rst = 0;
+
+        // Takeoff request
+        #10 takeoff_req = 1;
+        #10 takeoff_req = 0;
+
+        // Landing request
+        #20 landing_req = 1;
+        #10 landing_req = 0;
+
+        // Emergency landing
+        #20 emergency_req = 1;
+        #10 emergency_req = 0;
+
+        // Simultaneous requests
+        #20;
+        landing_req = 1;
+        takeoff_req = 1;
+        emergency_req = 1;
+
+        #10;
+        landing_req = 0;
+        takeoff_req = 0;
+        emergency_req = 0;
+
+        #50;
+
+        $finish;
+
+    end
+
+endmodule
