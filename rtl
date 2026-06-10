@@ -1,0 +1,54 @@
+module airport_runway_controller(
+
+    input clk,
+    input rst,
+
+    input emergency_req,
+    input landing_req,
+    input takeoff_req,
+
+    output reg emergency_grant,
+    output reg landing_grant,
+    output reg takeoff_grant
+
+);
+
+    always @(posedge clk or posedge rst)
+    begin
+
+        if(rst)
+        begin
+
+            emergency_grant <= 0;
+            landing_grant <= 0;
+            takeoff_grant <= 0;
+
+        end
+
+        else
+        begin
+
+            emergency_grant <= 0;
+            landing_grant <= 0;
+            takeoff_grant <= 0;
+
+            if(emergency_req)
+            begin
+                emergency_grant <= 1;
+            end
+
+            else if(landing_req)
+            begin
+                landing_grant <= 1;
+            end
+
+            else if(takeoff_req)
+            begin
+                takeoff_grant <= 1;
+            end
+
+        end
+
+    end
+
+endmodule
